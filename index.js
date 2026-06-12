@@ -36,9 +36,24 @@ async function run() {
     // node.js teke ei dui line nia aschi 
     const database = client.db("hireloop_db");
     const jobsCollection = database.collection("jobs");
+    const companyProfile = database.collection("companies");
+
+    // api  a data get korbo 
+    app.get('/api/jobs' , async( req, res) =>{
+      const query ={}
+      if(req.query.companyId){
+        query.companyId = req.query.companyId;
+      }
+      if(req.query.status){
+        query.status = req.query.status
+      }
+      const cursor = jobsCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
     // api  a data post korbo 
-    app.post('/jobs' , async( req, res) =>{
+    app.post('/api/jobs' , async( req, res) =>{
         const job = req.body;
         const result = await jobsCollection.insertOne(job)
         res.send(result)
