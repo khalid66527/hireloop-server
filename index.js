@@ -58,6 +58,23 @@ async function run() {
         const result = await jobsCollection.insertOne(job)
         res.send(result)
     })
+    // company data get korar api 
+    app.get("/api/my/company", async (req, res)=>{
+      const query = {};
+      if(req.query.recruiterId){
+        query.recruiterId = req.query.recruiterId;
+      }
+      const result = await companyProfile.findOne(query);
+      res.send(result);
+    })
+
+    
+    // company data past korar api 
+    app.post("/api/company", async( req, res)=>{
+      const company = req.body;
+      const result = await companyProfile.insertOne(company)
+      res.send(result)
+    })
 
     
     // Send a ping to confirm a successful connection
