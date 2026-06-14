@@ -55,7 +55,11 @@ async function run() {
     // api  a data post korbo 
     app.post('/api/jobs' , async( req, res) =>{
         const job = req.body;
-        const result = await jobsCollection.insertOne(job)
+        const newJob ={
+          ...job,
+          crearedAs: new Date ()
+        }
+        const result = await jobsCollection.insertOne(newJob)
         res.send(result)
     })
     // company data get korar api 
@@ -72,7 +76,11 @@ async function run() {
     // company data past korar api 
     app.post("/api/company", async( req, res)=>{
       const company = req.body;
-      const result = await companyProfile.insertOne(company)
+      const nreCompnay ={
+        ...company,
+        crearedAs: new Date()
+      }
+      const result = await companyProfile.insertOne(nreCompnay)
       res.send(result)
     })
 
