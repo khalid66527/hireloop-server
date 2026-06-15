@@ -37,7 +37,18 @@ async function run() {
     const database = client.db("hireloop_db");
     const jobsCollection = database.collection("jobs");
     const companyProfile = database.collection("companies");
+    const userCollection = database.collection("user");
 
+
+    app.get('/api/users', async( req,res)=>{
+      const cursor = userCollection.find()
+      const result1 = await cursor.toArray()
+      console.log("object", result1);
+      res.send(result1)
+    })
+
+
+    
     // api  a data get korbo 
     app.get('/api/jobs' , async( req, res) =>{
       const query ={}
@@ -52,6 +63,7 @@ async function run() {
       res.send(result);
     })
 
+
     // api  a data post korbo 
     app.post('/api/jobs' , async( req, res) =>{
         const job = req.body;
@@ -62,6 +74,15 @@ async function run() {
         const result = await jobsCollection.insertOne(newJob)
         res.send(result)
     })
+
+
+    app.get("/api/companies" ,async (req,res)=>{
+      const companies = await companyProfile.find()
+      const result = await companies.toArray()
+      res.send(result)
+    })
+
+
     // company data get korar api 
     app.get("/api/my/company", async (req, res)=>{
       const query = {};
@@ -69,7 +90,7 @@ async function run() {
         query.recruiterId = req.query.recruiterId;
       }
       const result = await companyProfile.findOne(query);
-      res.send(result);
+      res.send(result || {});
     })
 
     
