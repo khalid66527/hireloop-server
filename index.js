@@ -38,6 +38,7 @@ async function run() {
     const jobsCollection = database.collection("jobs");
     const companyProfile = database.collection("companies");
     const userCollection = database.collection("user");
+    const applicationCollection = database.collection("applications");
 
 
     app.get('/api/users', async( req,res)=>{
@@ -76,13 +77,38 @@ app.get("/api/jobs/:id", async (req, res) => {
       res.send(result);
     })
 
+    // company data get korar api 
+    app.get("/api/my/company", async (req, res)=>{
+      const query = {};
+      if(req.query.recruiterId){
+        query.recruiterId = req.query.recruiterId;
+      }
+      const result = await companyProfile.findOne(query);
+      res.send(result || {});
+    })
+
+
+
+    app.post('/api/applications', async (req, res)=>{
+      const application = req.body;
+      const newApplication = {
+        ...application,
+        crearedAt: new Date ()
+
+      }
+      const result = await applicationCollection.insertOne(newApplication)
+      res.send(result)
+
+    })
+
+    
 
     // api  a data post korbo 
     app.post('/api/jobs' , async( req, res) =>{
         const job = req.body;
         const newJob ={
           ...job,
-          crearedAs: new Date ()
+          crearedAt: new Date ()
         }
         const result = await jobsCollection.insertOne(newJob)
         res.send(result)
@@ -96,25 +122,14 @@ app.get("/api/jobs/:id", async (req, res) => {
     })
 
 
-    // company data get korar api 
-    app.get("/api/my/company", async (req, res)=>{
-      const query = {};
-      if(req.query.recruiterId){
-        query.recruiterId = req.query.recruiterId;
-      }
-      const result = await companyProfile.findOne(query);
-      res.send(result || {});
-    })
-
-    
     // company data past korar api 
     app.post("/api/company", async( req, res)=>{
       const company = req.body;
-      const nreCompnay ={
+      const newCompnay ={
         ...company,
         crearedAs: new Date()
       }
-      const result = await companyProfile.insertOne(nreCompnay)
+      const result = await companyProfile.insertOne(newCompnay)
       res.send(result)
     })
 
