@@ -4,7 +4,7 @@ const app = express()
 const port = 5000
 require('dotenv').config()
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // cors and express input 
 app.use(cors());
@@ -47,7 +47,20 @@ async function run() {
       res.send(result1)
     })
 
+    // details er id api 
 
+
+
+app.get("/api/jobs/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = {
+      _id: new ObjectId(id),
+    };
+    const result = await jobsCollection.findOne(query);
+    console.log("object", result);
+    res.send(result);
+ 
+});
     
     // api  a data get korbo 
     app.get('/api/jobs' , async( req, res) =>{
