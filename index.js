@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 
 
-const uri =process.env.MONGODB_DB_URI
+const uri = process.env.MONGODB_DB_URI
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -41,7 +41,7 @@ async function run() {
     const applicationCollection = database.collection("applications");
 
 
-    app.get('/api/users', async( req,res)=>{
+    app.get('/api/users', async (req, res) => {
       const cursor = userCollection.find()
       const result1 = await cursor.toArray()
       console.log("object", result1);
@@ -52,24 +52,24 @@ async function run() {
 
 
 
-app.get("/api/jobs/:id", async (req, res) => {
-    const id = req.params.id;
-    const query = {
-      _id: new ObjectId(id),
-    };
-    const result = await jobsCollection.findOne(query);
-    console.log("object", result);
-    res.send(result);
- 
-});
-    
+    app.get("/api/jobs/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: new ObjectId(id),
+      };
+      const result = await jobsCollection.findOne(query);
+      console.log("object", result);
+      res.send(result);
+
+    });
+
     // api  a data get korbo 
-    app.get('/api/jobs' , async( req, res) =>{
-      const query ={}
-      if(req.query.companyId){
+    app.get('/api/jobs', async (req, res) => {
+      const query = {}
+      if (req.query.companyId) {
         query.companyId = req.query.companyId;
       }
-      if(req.query.status){
+      if (req.query.status) {
         query.status = req.query.status
       }
       const cursor = jobsCollection.find(query);
@@ -78,22 +78,36 @@ app.get("/api/jobs/:id", async (req, res) => {
     })
 
     // company data get korar api 
-    app.get("/api/my/company", async (req, res)=>{
+    app.get("/api/my/company", async (req, res) => {
       const query = {};
-      if(req.query.recruiterId){
+      if (req.query.recruiterId) {
         query.recruiterId = req.query.recruiterId;
       }
       const result = await companyProfile.findOne(query);
       res.send(result || {});
     })
 
+    app.get('/api/applicantions', async (req, res) => {
+      const query = {}
+      if (req.query.applicantId) {
+        query.applicantId = req.query.applicantId;
+      }
+      if (req.query.jobId) {
+        query.jobId = req.query.jobId;
+      }
+
+      const cursor = applicationCollection.find(query);
+      const result = await cursor.toArray()
+      res.send(result)
+    })
 
 
-    app.post('/api/applications', async (req, res)=>{
+
+    app.post('/api/applications', async (req, res) => {
       const application = req.body;
       const newApplication = {
         ...application,
-        crearedAt: new Date ()
+        crearedAt: new Date()
 
       }
       const result = await applicationCollection.insertOne(newApplication)
@@ -101,21 +115,21 @@ app.get("/api/jobs/:id", async (req, res) => {
 
     })
 
-    
+
 
     // api  a data post korbo 
-    app.post('/api/jobs' , async( req, res) =>{
-        const job = req.body;
-        const newJob ={
-          ...job,
-          crearedAt: new Date ()
-        }
-        const result = await jobsCollection.insertOne(newJob)
-        res.send(result)
+    app.post('/api/jobs', async (req, res) => {
+      const job = req.body;
+      const newJob = {
+        ...job,
+        crearedAt: new Date()
+      }
+      const result = await jobsCollection.insertOne(newJob)
+      res.send(result)
     })
 
 
-    app.get("/api/companies" ,async (req,res)=>{
+    app.get("/api/companies", async (req, res) => {
       const companies = await companyProfile.find()
       const result = await companies.toArray()
       res.send(result)
@@ -123,9 +137,9 @@ app.get("/api/jobs/:id", async (req, res) => {
 
 
     // company data past korar api 
-    app.post("/api/company", async( req, res)=>{
+    app.post("/api/company", async (req, res) => {
       const company = req.body;
-      const newCompnay ={
+      const newCompnay = {
         ...company,
         crearedAs: new Date()
       }
@@ -133,7 +147,7 @@ app.get("/api/jobs/:id", async (req, res) => {
       res.send(result)
     })
 
-    
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
